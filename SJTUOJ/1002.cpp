@@ -11,6 +11,7 @@ int cc(int **matp, int m, int l, int h);
 
 int main()
 {
+
     int m, n, l, h;
     cin >> m >> n;
     int **matp = new int *[m];
@@ -43,27 +44,27 @@ int main()
 
 int cc(int **matp,int n ,int l, int h)
 {
-    static int ans;
-    static int** mtp = nullptr;
-    if (mtp != matp)
-    {
-        ans =0;
-        for (int j = 0; j < h; j++)
-        {
-            for (int i = 0; i < l; i++)
-            {
-                ans += matp[i][j + xa];
-            }
-        }
-        mtp = matp;
-    }
-    else
-    {
-        for (int i = 0; i < l; i++)
-        {
-            ans += matp[i][h + xa - 1];
-            ans -= matp[i][xa-1];
-        }
-    }
-    return ans;
+    // static int ans;
+    // static int** mtp = nullptr;
+    // if (mtp != matp)
+    // {
+    //     ans =0;
+    //     for (int j = 0; j < h; j++)
+    //     {
+    //         for (int i = 0; i < l; i++)
+    //         {
+    //             ans += matp[i][j + xa];
+    //         }
+    //     }
+    //     mtp = matp;
+    // }
+    // else
+    // {
+    //     for (int i = 0; i < l; i++)
+    //     {
+    //         ans += matp[i][h + xa - 1];
+    //         ans -= matp[i][xa-1];
+    //     }
+    // }
+    // return ans;
 }
