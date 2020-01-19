@@ -1,4 +1,4 @@
-int checksngl(int *array, int numsSize)
+int CheckNoDec(int *array, int numsSize)
 {
     for (int i = 0; i < numsSize - 1; i++)
         if (array[i + 1] < array[i])
@@ -7,19 +7,22 @@ int checksngl(int *array, int numsSize)
 }
 bool checkPossibility(int *nums, int numsSize)
 {
-    int i = checksngl(nums, numsSize);
+    //method cf leetcode critics
+    int i = CheckNoDec(nums, numsSize);
     if (i == -1)
         return true;
     else
     {
-        int bcup = nums[i];
-        int acup = nums[i + 1];
+        int numleft = nums[i];
+        int numright = nums[i + 1];
+        //right to left
         nums[i] = nums[i + 1];
-        if (checksngl(nums, numsSize) == -1)
+        if (CheckNoDec(nums, numsSize) == -1)
             return true;
-        nums[i] = bcup;
-        nums[i + 1] = bcup;
-        if (checksngl(nums, numsSize) == -1)
+        //left to right
+        nums[i] = numleft;
+        nums[i + 1] = numleft;
+        if (CheckNoDec(nums, numsSize) == -1)
             return true;
         return false;
     }
