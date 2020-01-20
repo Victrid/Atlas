@@ -35,4 +35,4 @@
 .vscode/*
 
 #wrong code
-*.x
+*.x.cpp
