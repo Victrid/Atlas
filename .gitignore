@@ -33,3 +33,6 @@
 
 # VSCode setting
 .vscode/*
+
+#wrong code
+*.x
