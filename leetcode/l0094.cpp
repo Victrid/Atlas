@@ -1,51 +1,42 @@
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
- */
-class Solution
-{
-public:
-    vector<int> inorderTraversal(TreeNode *root)
-    {
-        vector<int> ret;
-        ioT(root, ret);
-        return ret;
-    }
-    vector<int> &ioT(TreeNode *root, vector<int> &pos)
-    {
-        if (root == NULL)
-            return pos;
-        ioT(root->left, pos);
-        pos.push_back(root->val);
-        ioT(root->right, pos);
-        return pos;
-    }
-};
-//wrong
 class Solution
 {
 public:
     vector<int> inorderTraversal(TreeNode *root)
     {
         vector<TreeNode *> stack;
+        TreeNode *a = new TreeNode(0);
         vector<int> ans;
         stack.push_back(root);
         while (stack.begin() != stack.end())
         {
-            TreeNode *hptr = stack.back();
-            if (hptr->left != NULL)
+            if (stack.back() == a)
             {
-                stack.push_back(hptr->left);
+                //returned
+                stack.pop_back();
+                ans.push_back(stack.back()->val);
+                if (stack.back()->right != NULL)
+                {
+                    TreeNode *temp = stack.back()->right;
+                    stack.pop_back();
+                    stack.push_back(temp);
+                    continue;
+                }
+                stack.pop_back();
                 continue;
             }
-            ans.push_back(hptr->val);
-            if (hptr->right != NULL){
-                stack.push_back(stack.pop_back()->right);
+            if (stack.back() != NULL && stack.back()->left != NULL)
+            {
+                stack.push_back(a);
+                stack.push_back(stack.back()->left);
+                continue;
+            }
+            if (stack.back() != NULL)
+                ans.push_back(stack.back()->val);
+            if (stack.back() != NULL && stack.back()->right != NULL)
+            {
+                TreeNode *temp = stack.back()->right;
+                stack.pop_back();
+                stack.push_back(temp);
                 continue;
             }
             stack.pop_back();
