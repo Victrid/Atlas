@@ -26,3 +26,30 @@ public:
         return pos;
     }
 };
+//wrong
+class Solution
+{
+public:
+    vector<int> inorderTraversal(TreeNode *root)
+    {
+        vector<TreeNode *> stack;
+        vector<int> ans;
+        stack.push_back(root);
+        while (stack.begin() != stack.end())
+        {
+            TreeNode *hptr = stack.back();
+            if (hptr->left != NULL)
+            {
+                stack.push_back(hptr->left);
+                continue;
+            }
+            ans.push_back(hptr->val);
+            if (hptr->right != NULL){
+                stack.push_back(stack.pop_back()->right);
+                continue;
+            }
+            stack.pop_back();
+        }
+        return ans;
+    }
+};
