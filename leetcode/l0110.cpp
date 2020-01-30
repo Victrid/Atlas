@@ -22,9 +22,7 @@ public:
         if (root == nullptr)
             return true;
         int dd = depth(root->left) - depth(root->right);
-        if (dd > 1 || dd < -1)
-            return false;
-        return (isBalanced(root->left) && isBalanced(root->right));
+        return (dd <= 1 && dd >= -1&&isBalanced(root->left) && isBalanced(root->right));
     }
     int depth(TreeNode *root)
     {
