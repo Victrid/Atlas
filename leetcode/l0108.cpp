@@ -17,7 +17,7 @@ public:
             return nullptr;
         return ToBST(nums, nums.begin(), nums.end() - 1);
     }
-    //!iterator end indicates the first empty one but not last one
+    //! iterator end indicates the first empty one but not last one
     TreeNode *ToBST(vector<int> &nums, vector<int>::iterator begin, vector<int>::iterator end)
     {
         int size = end - begin + 1;
