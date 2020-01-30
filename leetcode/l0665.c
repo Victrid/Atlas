@@ -1,3 +1,5 @@
+//C
+#include <stdbool.h>
 int CheckNoDec(int *array, int numsSize)
 {
     for (int i = 0; i < numsSize - 1; i++)

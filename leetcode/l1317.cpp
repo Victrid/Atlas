@@ -1,3 +1,4 @@
+#include "lc.hpp"
 class Solution
 {
 public:

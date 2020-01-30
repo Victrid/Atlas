@@ -1,3 +1,4 @@
+#include "lc.hpp"
 class Solution
 {
 public:
@@ -10,4 +11,3 @@ public:
         return 3 * checkRecord(n - 1) - (n - 1) - checkRecord(n - 2);
     }
 };
-f(n + 1) = 3f(n) + n - f(n - 1)
