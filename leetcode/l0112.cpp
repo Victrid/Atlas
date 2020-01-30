@@ -8,23 +8,16 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
-//!wrong
-//it seems that leetcode cannot process the static well.
-//leaf means 
 class Solution
 {
 public:
     bool hasPathSum(TreeNode *root, int sum)
     {
-        static bool first = true;
         if (root == nullptr)
-        {
-            if (sum||first)
-                return false;
-            else
-                return true;
-        }
-        first = false;
-        return hasPathSum(root->left, sum - root->val) || hasPathSum(root->right, sum - root->val);
+            return false;
+        if (root->left == nullptr && root->right == nullptr)
+            return (root->val == sum) ? true : false;
+        else
+            return hasPathSum(root->left, sum - root->val) || hasPathSum(root->right, sum - root->val);
     }
 };
