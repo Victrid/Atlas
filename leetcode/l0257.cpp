@@ -8,36 +8,32 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
-//*this solution is very slow and requires a lot memory.
+//*After changing stringpharse into & fasten the programme greatly.
 class Solution
 {
 public:
-    vector<vector<TreeNode *>> btp(TreeNode *root, vector<TreeNode *> infpath = vector<TreeNode *>())
+    vector<string> &binaryTreePaths(TreeNode *root, vector<string> &ans, vector<TreeNode *> formerpath = vector<TreeNode *>())
     {
-        vector<vector<TreeNode *>> ans;
         if (root != nullptr)
-            infpath.push_back(root);
+            formerpath.push_back(root);
         else
             return ans;
-
         if (root->left == nullptr && root->right == nullptr)
         {
-            ans.push_back(infpath);
+            ans.push_back(Pharse(formerpath));
             return ans;
         }
         if (root->left != nullptr)
         {
-            vector<vector<TreeNode *>> ret = btp(root->left, infpath);
-            ans.insert(ans.end(), ret.begin(), ret.end());
+            binaryTreePaths(root->left, ans, formerpath);
         }
         if (root->right != nullptr)
         {
-            vector<vector<TreeNode *>> ret = btp(root->right, infpath);
-            ans.insert(ans.end(), ret.begin(), ret.end());
+            binaryTreePaths(root->right, ans, formerpath);
         }
         return ans;
     }
-    string Pharse(vector<TreeNode *> q)
+    string Pharse(vector<TreeNode *> &q)
     {
         string a;
         bool rf = false;
@@ -53,13 +49,7 @@ public:
     vector<string> binaryTreePaths(TreeNode *root)
     {
         vector<string> ans;
-        vector<vector<TreeNode *>> bans = btp(root);
-        for (vector<vector<TreeNode *>>::iterator i = bans.begin(); i < bans.end(); i++)
-        {
-            string b = Pharse(*i);
-            if (b.length())
-                ans.push_back(b);
-        }
+        binaryTreePaths(root, ans);
         return ans;
     }
 };
