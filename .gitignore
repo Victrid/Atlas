@@ -41,3 +41,7 @@
 *.log
 *.log.md
 /log/*
+
+# Clion files
+
+/.idea/*
