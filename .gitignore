@@ -31,8 +31,13 @@
 *.out
 *.app
 
-# VSCode setting
+# VSCode settings
 .vscode/*
 
-#wrong code
+# Wrong codes
 *.x.cpp
+
+# Log files
+*.log
+*.log.md
+/log/*
