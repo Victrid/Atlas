@@ -2,34 +2,22 @@
 
 class Solution {
 public:
-    vector<int>::iterator find(vector<int>& list, int num) {
-        for (vector<int>::iterator f = list.begin(); f < list.end(); f++) {
+    vector<int>::iterator find(vector<int>::iterator begin, vector<int>::iterator end, int num) {
+        for (vector<int>::iterator f = begin; f < end; f++)
             if (*f == num)
                 return f;
-        }
-        return list.end();
+        return end;
     }
-    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        //root,left,right pre
-        //left,root,right in
-        if (preorder.begin() == preorder.end())
+    TreeNode* buildTree(vector<int>::iterator pbegin, vector<int>::iterator pend, vector<int>::iterator ibegin, vector<int>::iterator iend) {
+        if (pbegin == pend)
             return nullptr;
-        int root                          = preorder.front();
+        int root                          = *pbegin;
         TreeNode* TreeRoot                = new TreeNode(root);
-        vector<int>::iterator rootinorder = find(inorder, root);
-        int leftsize                      = rootinorder - inorder.begin();
-        vector<int> leftinorder(inorder.begin(), inorder.begin()+leftsize);
-        vector<int> rightinorder(inorder.begin() + 1 + leftsize, inorder.end());
-        vector<int> leftpreorder(preorder.begin() + 1, preorder.begin() + 1+ leftsize);
-        vector<int> rightpreorder(preorder.begin() + 1 + leftsize, preorder.end());
-        TreeRoot->left  = buildTree(leftpreorder, leftinorder);
-        TreeRoot->right = buildTree(rightpreorder, rightinorder);
+        vector<int>::iterator rootinorder = find(ibegin, iend, root);
+        int leftsize                      = rootinorder - ibegin;
+        TreeRoot->left                    = buildTree(pbegin + 1, pbegin + 1 + leftsize, ibegin, ibegin + leftsize);
+        TreeRoot->right                   = buildTree(pbegin + 1 + leftsize, pend, ibegin + 1 + leftsize, iend);
         return TreeRoot;
     }
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) { return buildTree(preorder.begin(), preorder.end(), inorder.begin(), inorder.end()); }
 };
-int main(){
-    Solution sol;
-    vector<int> a = {3,9,20,15,7},b={9,3,15,20,7};
-    sol.buildTree(a,b);
-    return 0;
-}
