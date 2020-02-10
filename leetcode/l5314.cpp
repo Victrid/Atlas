@@ -1,48 +1,64 @@
-//TLE and ugly.
 #include "lc.hpp"
+
 class Solution {
 public:
     int minJumps(vector<int>& arr) {
-        vector<int> z = {7872, 8708, -5921, -2477, -4437};
-        vector<int> y = {7113, 916, 919, -3002, -4560};
-        bool Zflag    = true;
-        bool Yflag    = true;
-        for (int i = 0; i < 5; i++) {
-            if (arr[i] != z[i])
-                Zflag = false;
-            if (arr[i] != y[i])
-                Yflag = false;
-        }
-        if (Zflag)
-            return 30;
-        if (Yflag)
-            return 9;
-        vector<int> arrdst(arr.end() - arr.begin(), arr.end() - arr.begin());
-        arrdst[0] = 0;
-        for (int i = 0; i < (arr.end() - arr.begin()); i++) {
-            bool JUMP_FLAG = false;
-            if (i != 0)
-                arrdst[i] = arrdst[i - 1] + 1;
-            for (int j = 0; j < i; j++) {
-                if (arr[i] == arr[j]) {
-                    arrdst[i] = (arrdst[i] > arrdst[j] + 1) ? arrdst[j] + 1 : arrdst[i];
-                    JUMP_FLAG = true;
-                }
+        //* Using BFS method.
+        //1.reduce vector size.
+        for (auto i = arr.begin() + 2; i < arr.end(); i++) {
+            while ((*i) == *(i - 1) && (*i) == *(i - 2)) {
+                i = arr.erase(i);
             }
-            if (JUMP_FLAG) {
-                if (arrdst[i - 1] > arrdst[i] + 1)
-                    arrdst[i - 1] = arrdst[i] + 1;
-                for (int z = i - 2; z > 0; z--) {
-                    if (arrdst[z] > arrdst[z + 1] + 1) {
-                        arrdst[z] = arrdst[z + 1] + 1;
-                    }
+        }
+        //2.construct a search node.
+        //using an unordered_map to search for same numbers.
+        //as introduced, map is good for searching as it only costs 
+        //nearly const time.
+        unordered_map<int, vector<vector<int>::iterator>> um;
+        for (auto i = arr.begin(); i < arr.end(); i++) {
+            if (um.find(*i) == um.end()) {
+                vector<vector<int>::iterator> itr;
+                itr.push_back(i);
+                um[*i] = itr;
+            } else {
+                um[*i].push_back(i);
+            }
+        }
 
-                    if (arrdst[z] > arrdst[z - 1] + 1) {
-                        arrdst[z] = arrdst[z - 1] + 1;
+        //3. BFS search. using a vector to avoid loop.
+        vector<bool> arrvisited(arr.size(), false);
+        queue<vector<int>::iterator> q;
+        vector<int>::iterator fin = arr.end();
+        q.push(arr.begin());
+        q.push(fin);
+        int step = 0;
+        while (!q.empty()) {
+            if (q.front() == arr.end()) {
+                q.pop();
+                if (!q.empty()) {
+                    q.push(fin);
+                    step++;
+                }
+                continue;
+            }
+            if (q.front() == arr.end() - 1)
+                return step;
+            if (!arrvisited[q.front() - arr.begin()]) {
+                if (q.front() != arr.begin() && !arrvisited[q.front() - arr.begin() - 1]) {
+                    q.push(q.front() - 1);
+                }
+                if (q.front() + 1 != arr.end() && !arrvisited[q.front() - arr.begin() + 1]) {
+                    q.push(q.front() + 1);
+                }
+                for (auto i = um[*q.front()].begin(); i < um[*q.front()].end(); i++) {
+                    if (!arrvisited[*i - arr.begin()]) {
+                        q.push(*i);
                     }
                 }
             }
+            arrvisited[q.front() - arr.begin()] = true;
+            q.pop();
         }
-        return arrdst[arr.end() - arr.begin() - 1];
+        return step;
     }
 };
