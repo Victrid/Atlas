@@ -22,9 +22,3 @@ vector<int>::iterator find(vector<int>::iterator begin, vector<int>::iterator en
         return buildTree(postorder.begin(), postorder.end(), inorder.begin(), inorder.end());
     }
 };
-int main(){
-    Solution sol;
-    vector<int> a={9,3,15,20,7},b={9,15,7,20,3};
-    sol.buildTree(a,b);
-    return 0;
-}
