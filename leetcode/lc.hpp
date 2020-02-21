@@ -35,6 +35,8 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <numeric>
+#include <bitset>
 
 #include <map>
 #include <queue>
