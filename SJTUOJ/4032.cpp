@@ -1,42 +1,29 @@
-#include <iostream>
 #include <cmath>
+#include <iostream>
 using namespace std;
-int main()
-{
+int main() {
     double a, b, c, temp;
     cin >> a >> b >> c;
     //rank
-    if (a > b)
-    {
+    if (a > b) {
         temp = a;
-        a = b;
-        b = temp;
+        a    = b;
+        b    = temp;
     }
-    if (b > c)
-    {
+    if (b > c) {
         temp = b;
-        b = c;
-        c = temp;
-    }
-    if (a > b)
-    {
-        temp = a;
-        a = b;
-        b = temp;
+        b    = c;
+        c    = temp;
     }
     //is triangle
-    if (c >= (a + b) || a <= 0)
-    {
+    if (c >= (a + b) || a <= 0) {
         cout << "-1";
         return 0;
     }
     //is RT
-    if ((c * c - a * a - b * b) <= 1e-6 && (c * c - a * a - b * b) >= -1e-6)
-    {
+    if ((c * c - a * a - b * b) <= 1e-6 && (c * c - a * a - b * b) >= -1e-6) {
         cout << "1";
-    }
-    else
-    {
+    } else {
         cout << "0";
     }
     return 0;
