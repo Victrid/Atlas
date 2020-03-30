@@ -2,4 +2,5 @@
 
 ### Atlas, The Lame Algorithm Solution
 
-Now Atlas includes SJTUOJ and leetcode.
+Now Atlas includes Data Structure homework.
+
