@@ -330,6 +330,8 @@ public:
         //reuse operator new[] instead.
         //Cf. https://zh.cppreference.com/w/cpp/memory/new/operator_new
         //That's interesting... I'm too weak (._.)rz
+        //RENEW: I found errors not fit but passing the test.
+        //now changed.
         //-------------obsolete----------------
         //not setting to 0 is causing bint error.
         //bint is comparing capacity to assign,
@@ -348,15 +350,13 @@ public:
         r_capacity = size;
         r_size     = 0;
         container  = (T*)operator new[](sizeof(T) * r_capacity);
-        memset(container, 0, sizeof(T) * r_capacity);
         return;
     }
 
     //copy initiator.
     vector(const vector& other) : r_capacity(other.capacity()), container((T*)operator new[](sizeof(T) * r_capacity)), r_size(other.size()) {
-        memset(container, 0, sizeof(T) * r_capacity);
         for (size_t i = 0; i < r_size; i++)
-            container[i] = other.container[i];
+            new(container+i) T(other.container[i]);
         return;
     }
 
@@ -389,9 +389,8 @@ public:
             r_capacity = other.capacity();
             r_size     = other.size();
             container  = (T*)operator new[](sizeof(T) * r_capacity);
-            memset(container, 0, sizeof(T) * r_capacity);
             for (size_t i = 0; i < r_size; i++)
-                container[i] = other.container[i];
+                new(container+i) T(other.container[i]);
         }
         return *this;
     }
@@ -494,9 +493,8 @@ public:
     void enlarge() {
         //enlarge the space.
         T* temp = (T*)operator new[](sizeof(T) * r_capacity << 1);
-        memset(temp, 0, sizeof(T) * r_capacity << 1);
         for (size_t i = 0; i < r_size; i++) {
-            temp[i] = container[i];
+            new(temp+i) T(container[i]);
             //After malloc should destroy separately.
             //Cf. https://www.cnblogs.com/jobshunter/p/10976308.html
             container[i].~T();
@@ -515,9 +513,8 @@ public:
             temp >>= 1;
         temp <<= 1;
         T* temp_container = (T*)operator new[](sizeof(T) * temp);
-        memset(temp_container, 0, sizeof(T) * temp);
         for (size_t i = 0; i < r_size; i++) {
-            temp_container[i] = container[i];
+            new(temp_container+i) T(container[i]);
             container[i].~T();
         }
         operator delete[](container, r_capacity * sizeof(T));
