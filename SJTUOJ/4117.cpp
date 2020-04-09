@@ -1,13 +1,11 @@
 #include <cstdio>
 #include <iostream>
 using namespace std;
-//*shitcode
-// I'll rewrite the code.
 //The lazy tag is really confusing.
 //I may just follow the tutorial.
 //400005
-long long seq[21];
-long long tags[21] = {0};
+long long seq[400005]  = {0};
+long long tags[400005] = {0};
 struct set {
     //segmenttree
     //Tree access helper
@@ -88,6 +86,8 @@ int addsequence(int oper_left, int oper_right, set s, long long add) {
         s.update_fathers();
         return 0;
     } else {
+        //if tags not passed, ancestors cannot get updated correctly.
+        tagproc(s);
         int mid = (s.leftbound + s.rightbound) / 2;
         if (oper_left <= mid) {
             //Although no tags,
