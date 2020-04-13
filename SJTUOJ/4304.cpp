@@ -1,63 +1,116 @@
 #include <cstdio>
 #include <iostream>
+//。。。
+//Let's try 4117's structure.
 using namespace std;
-//??pa3mep??
-long long mushroom[400010]={0};
+long long seq[400005]  = {0};
+long long tags[400005] = {0};
 struct set {
-    //segment tree
-    int sleft;
-    int sright;
+    //segmenttree
+    //Tree access helper
+    int leftbound;
+    int rightbound;
     int current;
     long long& value;
+    long long& tag;
     set left() {
-        return set{sleft, (sleft + sright) >> 1, current << 1, mushroom[current << 1]};
+        return set{
+            leftbound, (leftbound + rightbound) / 2, current << 1, seq[current << 1], tags[current << 1]};
     }
     set right() {
-        return set{((sleft + sright) >> 1) + 1, sright, current << 1 | 1, mushroom[current << 1 | 1]};
+        return set{
+            (leftbound + rightbound) / 2 + 1, rightbound, current << 1 | 1, seq[current << 1 | 1], tags[current << 1 | 1]};
     }
-    bool isleaf() { return !(sright - sleft); }
-    void update_fathers() {
+    int addtag() {
+        return (rightbound - leftbound + 1) * tag;
+    }
+    bool isleaf() { return !(rightbound - leftbound); }
+    int update_fathers() {
         int z = current >> 1;
         while (z != 0) {
-            mushroom[z] = mushroom[z << 1] + mushroom[z << 1 | 1];
+            seq[z] = seq[z << 1] + seq[z << 1 | 1];
             z >>= 1;
         }
-        return;
+        return 0;
     }
 };
-void buildtree(set root) {
-    if (root.isleaf()) {
-        scanf("%lld", mushroom + root.current);
-        return;
+void buildtree(set s) {
+    if (s.leftbound == s.rightbound)
+        s.value = 0;
+    char c;
+    do {
+        c = getchar();
+        if (c != ' ' && c != '\n') {
+            s.value *= 10;
+            s.value += c - '0';
+        }
+    } while (c != ' ' && c != '\n');
+    else {
+        buildtree(s.left());
+        buildtree(s.right());
+        s.value = s.left().value + s.right().value;
     }
-    buildtree(root.left());
-    buildtree(root.right());
-    root.value = root.left().value + root.right().value;
-    return;
 }
-void single_addition(int count, int add, set s) {
-    if (count == s.sleft && count == s.sright) {
-        s.value += add;
-        s.update_fathers();
-        return;
+void buildtree(int total) {
+    buildtree(set{1, total, 1, seq[1], tags[1]});
+}
+int tagproc(set s) {
+    if (!s.isleaf()) {
+        if (!s.left().isleaf())
+            s.left().tag += s.tag;
+        s.left().value += s.tag * (s.left().rightbound - s.left().leftbound + 1);
+        if (!s.right().isleaf())
+            s.right().tag += s.tag;
+        s.right().value += s.tag * (s.right().rightbound - s.right().leftbound + 1);
     }
-    if (count <= (s.sleft + s.sright) >> 1)
-        return single_addition(count, add, s.left());
-    else
-        return single_addition(count, add, s.right());
+    s.tag = 0;
+    return 0;
 }
-long long sequence_query(int lbound, int rbound, set s) {
-    if (lbound <= s.sleft && rbound >= s.sright)
+long long getsum(int oper_left, int oper_right, set s) {
+    if (oper_left <= s.leftbound && s.rightbound <= oper_right) {
+        if (s.tag != 0)
+            tagproc(s);
         return s.value;
-    int mid = (s.sleft + s.sright) >> 1;
-    long long ans = 0;
-    if (lbound <= mid) {
-        ans += sequence_query(lbound, rbound, s.left());
+    } else {
+        long long sum = 0;
+        int mid       = (s.leftbound + s.rightbound) / 2;
+        if (s.tag != 0)
+            tagproc(s);
+        if (oper_left <= mid)
+            sum += getsum(oper_left, oper_right, s.left());
+        if (oper_right > mid)
+            sum += getsum(oper_left, oper_right, s.right());
+        return sum;
     }
-    if (rbound >= mid + 1) {
-        ans += sequence_query(lbound, rbound, s.right());
+}
+long long getsum(int oper_left, int oper_right, int total) {
+    return getsum(oper_left, oper_right, set{1, total, 1, seq[1], tags[1]});
+}
+int addsequence(int oper_left, int oper_right, set s, long long add) {
+    if (oper_left <= s.leftbound && s.rightbound <= oper_right) {
+        s.value += add * (s.rightbound - s.leftbound + 1);
+        s.tag += add;
+        s.update_fathers();
+        return 0;
+    } else {
+        //if tags not passed, ancestors cannot get updated correctly.
+        tagproc(s);
+        int mid = (s.leftbound + s.rightbound) / 2;
+        if (oper_left <= mid) {
+            //Although no tags,
+            //father's value add first.
+            s.value += add * (mid - oper_left + 1);
+            addsequence(oper_left, oper_right, s.left(), add);
+        }
+        if (oper_right > mid) {
+            s.value += add * (oper_right - mid);
+            addsequence(oper_left, oper_right, s.right(), add);
+        }
+        return 0;
     }
-    return ans;
+}
+int addsequence(int oper_left, int oper_right, int total, long long add) {
+    return addsequence(oper_left, oper_right, set{1, total, 1, seq[1], tags[1]}, add);
 }
 struct input {
     enum operat { SELL,
@@ -68,10 +121,10 @@ struct input {
 };
 input getinput() {
     char c;
-    input ans;
     do {
         c = getchar();
     } while (c == ' ' || c == '\n');
+    input ans;
     switch (c) {
     case 'S':
         ans.operation = input::SELL;
@@ -86,26 +139,61 @@ input getinput() {
     do {
         c = getchar();
     } while (c != ' ' && c != '\n');
-    scanf("%d %d", &(ans.i), &(ans.j));
+    int proc = 0;
+    do {
+        c = getchar();
+        if (c != ' ' && c != '\n') {
+            proc *= 10;
+            proc += c - '0';
+        }
+    } while (c != ' ' && c != '\n');
+    ans.i = proc;
+    proc  = 0;
+    do {
+        c = getchar();
+        if (c != ' ' && c != '\n') {
+            proc *= 10;
+            proc += c - '0';
+        }
+    } while (c != ' ' && c != '\n');
+    ans.j = proc;
     return ans;
 }
 int main() {
-    int P;
-    scanf("%d", &P);
-    buildtree(set{1, P, 1, mushroom[1]});
-    int M;
-    scanf("%d", &M);
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+    int P = 0;
+    char c;
+    do {
+        c = getchar();
+        if (c != ' ' && c != '\n') {
+            P *= 10;
+            P += c - '0';
+        }
+    } while (c != ' ' && c != '\n');
+    buildtree(P);
+    int M = 0;
+    do {
+        c = getchar();
+        if (c != ' ' && c != '\n') {
+            M *= 10;
+            M += c - '0';
+        }
+    } while (c != ' ' && c != '\n');
+    int querytime = 0;
     while (M--) {
         input ans = getinput();
         switch (ans.operation) {
         case input::SELL:
-            single_addition(ans.i, -ans.j, set{1, P, 1, mushroom[1]});
+            addsequence(ans.i, ans.i, P, -ans.j);
             break;
         case input::QUERY:
-            printf("%lld\n", sequence_query(ans.i, ans.j, set{1, P, 1, mushroom[1]}));
+            if (querytime++)
+                cout << endl;
+            cout << getsum(ans.i, ans.j, P);
             break;
         case input::GET:
-            single_addition(ans.i, ans.j, set{1, P, 1, mushroom[1]});
+            addsequence(ans.i, ans.i, P, ans.j);
             break;
         }
     }
