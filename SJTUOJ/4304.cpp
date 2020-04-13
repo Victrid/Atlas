@@ -1,7 +1,8 @@
 #include <cstdio>
 #include <iostream>
 using namespace std;
-long long mushroom[400000];
+//??pa3mep??
+long long mushroom[400010]={0};
 struct set {
     //segment tree
     int sleft;
@@ -35,19 +36,20 @@ void buildtree(set root) {
     return;
 }
 void single_addition(int count, int add, set s) {
-    if (count < s.sleft || count > s.sright)
+    if (count == s.sleft && count == s.sright) {
+        s.value += add;
+        s.update_fathers();
         return;
-    s.value += add;
-    if (!s.isleaf()) {
-        single_addition(count, add, s.left());
-        single_addition(count, add, s.right());
     }
-    return;
+    if (count <= (s.sleft + s.sright) >> 1)
+        return single_addition(count, add, s.left());
+    else
+        return single_addition(count, add, s.right());
 }
 long long sequence_query(int lbound, int rbound, set s) {
     if (lbound <= s.sleft && rbound >= s.sright)
         return s.value;
-    int mid       = (s.sleft + s.sright) >> 1;
+    int mid = (s.sleft + s.sright) >> 1;
     long long ans = 0;
     if (lbound <= mid) {
         ans += sequence_query(lbound, rbound, s.left());
