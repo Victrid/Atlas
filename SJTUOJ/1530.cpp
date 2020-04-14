@@ -3,67 +3,53 @@
 #include <iostream>
 using namespace std;
 //草，这个HS08TTC，改都不改一下
-template <typename T, T* seq>
-struct ltrav {
-    int current;
-    T& val;
-    ltrav<T, seq> left() {
-        return ltrav<T, seq>{(current << 1) + 1, seq[(current << 1) + 1]};
-    }
-    ltrav<T, seq> right() {
-        return ltrav<T, seq>{(current << 1) + 2, seq[(current << 1) + 2]};
-    }
-    ltrav<T, seq> father() {
-        return ltrav<T, seq>{((current + 1) << 1) - 1, seq[((current + 1) << 1) - 1]};
-    }
-};
 char input[1000001] = {'\0'};
-void printpreorder(ltrav<char, input> s, int total) {
-    if (s.current >= total)
+void printpreorder(int current, int total) {
+    if (current >= total)
         return;
-    putchar(s.val);
-    printpreorder(s.left(), total);
-    printpreorder(s.right(), total);
+    putchar(input[current]);
+    printpreorder((current << 1) + 1, total);
+    printpreorder((current << 1) + 2, total);
     return;
 }
-void printinorder(ltrav<char, input> s, int total) {
-    if (s.current >= total)
+void printinorder(int current, int total) {
+    if (current >= total)
         return;
-    printinorder(s.left(), total);
-    putchar(s.val);
-    printinorder(s.right(), total);
+    printinorder((current << 1) + 1, total);
+    putchar(input[current]);
+    printinorder((current << 1) + 2, total);
     return;
 }
-void printpostorder(ltrav<char, input> s, int total) {
-    if (s.current >= total)
+void printpostorder(int current, int total) {
+    if (current >= total)
         return;
-    printpostorder(s.left(), total);
-    printpostorder(s.right(), total);
-    putchar(s.val);
+    printpostorder((current << 1) + 1, total);
+    printpostorder((current << 1) + 2, total);
+    putchar(input[current]);
     return;
 }
-void estkpreorder(ltrav<char, input> s, int total) {
-    if (s.current >= total)
+void estkpreorder(int current, int total) {
+    if (current >= total)
         return;
-    s.val = getchar();
-    estkpreorder(s.left(), total);
-    estkpreorder(s.right(), total);
+    input[current] = getchar();
+    estkpreorder((current << 1) + 1, total);
+    estkpreorder((current << 1) + 2, total);
     return;
 }
-void estkinorder(ltrav<char, input> s, int total) {
-    if (s.current >= total)
+void estkinorder(int current, int total) {
+    if (current >= total)
         return;
-    estkinorder(s.left(), total);
-    s.val = getchar();
-    estkinorder(s.right(), total);
+    estkinorder((current << 1) + 1, total);
+    input[current] = getchar();
+    estkinorder((current << 1) + 2, total);
     return;
 }
-void estkpostorder(ltrav<char, input> s, int total) {
-    if (s.current >= total)
+void estkpostorder(int current, int total) {
+    if (current >= total)
         return;
-    estkpostorder(s.left(), total);
-    estkpostorder(s.right(), total);
-    s.val = getchar();
+    estkpostorder((current << 1) + 1, total);
+    estkpostorder((current << 1) + 2, total);
+    input[current] = getchar();
     return;
 }
 
@@ -101,39 +87,36 @@ int main() {
         switch (ordf) {
         case 0:
             //PREORDER DECODE
-            estkpreorder(ltrav<char, input>{0, input[0]}, total);
+            estkpreorder(0, total);
             input[total] = '\0';
             printf("%s", input);
             break;
         case 1:
             //INORDER DECODE
-            estkinorder(ltrav<char, input>{0, input[0]}, total);
+            estkinorder(0, total);
             input[total] = '\0';
             printf("%s", input);
             break;
         case 2:
             //POSTORDER DECODE
-            estkpostorder(ltrav<char, input>{0, input[0]}, total);
+            estkpostorder(0, total);
             input[total] = '\0';
             printf("%s", input);
             break;
         case 10:
             //PREORDER ENCODE
-            fgets(input, sizeof(input), stdin);
-            input[total] = '\0';
-            printpreorder(ltrav<char, input>{0, input[0]}, total);
+            fgets(input, 1000001, stdin);
+            printpreorder(0, total);
             break;
         case 11:
             //INORDER ENCODE
-            fgets(input, sizeof(input), stdin);
-            input[total] = '\0';
-            printinorder(ltrav<char, input>{0, input[0]}, total);
+            fgets(input, 1000001, stdin);
+            printinorder(0, total);
             break;
         case 12:
             //POSTORDER ENCODE
-            fgets(input, sizeof(input), stdin);
-            input[total] = '\0';
-            printpostorder(ltrav<char, input>{0, input[0]}, total);
+            fgets(input, 1000001, stdin);
+            printpostorder(0, total);
             break;
         }
         putchar('\n');
