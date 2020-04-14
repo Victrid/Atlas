@@ -17,9 +17,7 @@ struct ltrav {
         return ltrav<T, seq>{((current + 1) << 1) - 1, seq[((current + 1) << 1) - 1]};
     }
 };
-//1000001
 char input[1000001] = {'\0'};
-// group of encode CHECK OK
 void printpreorder(ltrav<char, input> s, int total) {
     if (s.current >= total)
         return;
@@ -44,75 +42,31 @@ void printpostorder(ltrav<char, input> s, int total) {
     putchar(s.val);
     return;
 }
-
-//group of decode
-char treerecv[1000001] = {'\0'};
-//queue and stack
-//content: char*, default empty: nullptr
-char* datastorage[4000003] = {nullptr};
-char** frontptr;
-char** endptr;
-void clearqueue() {
-    frontptr = datastorage;
-    endptr   = datastorage + 1;
-}
-void clearstack() {
-    endptr = datastorage;
-}
-void enqueue(char* cr) {
-    *endptr = cr;
-    endptr++;
-}
-void enstack(char* cr) {
-    *endptr = cr;
-    endptr++;
-}
-char* destack() {
-    if (endptr == datastorage)
-        return nullptr;
-    else
-        endptr--;
-    return *endptr;
-}
-char* dequeue() {
-    if (frontptr + 1 == endptr)
-        return nullptr;
-    else
-        frontptr++;
-    return *frontptr;
-}
-void estkpreorder(ltrav<char, treerecv> s, int total) {
+void estkpreorder(ltrav<char, input> s, int total) {
     if (s.current >= total)
         return;
-    enqueue(&(s.val));
+    s.val = getchar();
     estkpreorder(s.left(), total);
     estkpreorder(s.right(), total);
     return;
 }
-void estkinorder(ltrav<char, treerecv> s, int total) {
+void estkinorder(ltrav<char, input> s, int total) {
     if (s.current >= total)
         return;
     estkinorder(s.left(), total);
-    enqueue(&(s.val));
+    s.val = getchar();
     estkinorder(s.right(), total);
     return;
 }
-void estkpostorder(ltrav<char, treerecv> s, int total) {
+void estkpostorder(ltrav<char, input> s, int total) {
     if (s.current >= total)
         return;
     estkpostorder(s.left(), total);
     estkpostorder(s.right(), total);
-    enqueue(&(s.val));
+    s.val = getchar();
     return;
 }
-void vldr(int total) {
-    for (int i = 0; i < total; i++) {
-        *dequeue() = input[i];
-    }
-    for (int i = 0; i < total; i++) {
-        putchar(treerecv[i]);
-    }
-}
+
 int main() {
     int t, total, chr;
     int ordf;
@@ -143,37 +97,42 @@ int main() {
         do {
             chr = getchar();
         } while (chr != '\n');
-        fgets(input, sizeof(input), stdin);
-        input[total] = '\0';
+
         switch (ordf) {
         case 0:
             //PREORDER DECODE
-            clearqueue();
-            estkpreorder(ltrav<char, treerecv>{0, treerecv[0]}, total);
-            vldr(total);
+            estkpreorder(ltrav<char, input>{0, input[0]}, total);
+            input[total] = '\0';
+            printf("%s", input);
             break;
         case 1:
             //INORDER DECODE
-            clearqueue();
-            estkinorder(ltrav<char, treerecv>{0, treerecv[0]}, total);
-            vldr(total);
+            estkinorder(ltrav<char, input>{0, input[0]}, total);
+            input[total] = '\0';
+            printf("%s", input);
             break;
         case 2:
             //POSTORDER DECODE
-            clearqueue();
-            estkpostorder(ltrav<char, treerecv>{0, treerecv[0]}, total);
-            vldr(total);
+            estkpostorder(ltrav<char, input>{0, input[0]}, total);
+            input[total] = '\0';
+            printf("%s", input);
             break;
         case 10:
             //PREORDER ENCODE
+            fgets(input, sizeof(input), stdin);
+            input[total] = '\0';
             printpreorder(ltrav<char, input>{0, input[0]}, total);
             break;
         case 11:
             //INORDER ENCODE
+            fgets(input, sizeof(input), stdin);
+            input[total] = '\0';
             printinorder(ltrav<char, input>{0, input[0]}, total);
             break;
         case 12:
             //POSTORDER ENCODE
+            fgets(input, sizeof(input), stdin);
+            input[total] = '\0';
             printpostorder(ltrav<char, input>{0, input[0]}, total);
             break;
         }
