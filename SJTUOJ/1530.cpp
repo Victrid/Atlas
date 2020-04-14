@@ -89,33 +89,33 @@ int main() {
             //PREORDER DECODE
             estkpreorder(0, total);
             input[total] = '\0';
-            printf("%s", input);
+            puts(input);
             break;
         case 1:
             //INORDER DECODE
             estkinorder(0, total);
             input[total] = '\0';
-            printf("%s", input);
+            puts(input);
             break;
         case 2:
             //POSTORDER DECODE
             estkpostorder(0, total);
             input[total] = '\0';
-            printf("%s", input);
+            puts(input);
             break;
         case 10:
             //PREORDER ENCODE
-            fgets(input, 1000001, stdin);
+            scanf("%s", input);
             printpreorder(0, total);
             break;
         case 11:
             //INORDER ENCODE
-            fgets(input, 1000001, stdin);
+            scanf("%s", input);
             printinorder(0, total);
             break;
         case 12:
             //POSTORDER ENCODE
-            fgets(input, 1000001, stdin);
+            scanf("%s", input);
             printpostorder(0, total);
             break;
         }
