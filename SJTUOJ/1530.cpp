@@ -18,40 +18,7 @@ struct ltrav {
     }
 };
 //1000001
-char input[20] = {'\0'};
-//queue and stack
-char datastorage[4000003] = {'\0'};
-char* frontptr;
-char* endptr;
-void clearqueue() {
-    frontptr = datastorage;
-    endptr   = datastorage + 1;
-}
-void clearstack() {
-    endptr = datastorage;
-}
-void enqueue(char cr) {
-    *endptr = cr;
-    endptr++;
-}
-void enstack(char cr) {
-    *endptr = cr;
-    endptr++;
-}
-char destack() {
-    if (endptr == datastorage)
-        return '\0';
-    else
-        endptr--;
-    return *endptr;
-}
-char dequeue() {
-    if (frontptr + 1 == endptr)
-        return '\0';
-    else
-        frontptr++;
-    return *frontptr;
-}
+char input[1000001] = {'\0'};
 // group of encode CHECK OK
 void printpreorder(ltrav<char, input> s, int total) {
     if (s.current >= total)
@@ -79,46 +46,76 @@ void printpostorder(ltrav<char, input> s, int total) {
 }
 
 //group of decode
-int get_full_tree(int total) {
-    int p = 1;
-    while (p - 1 < total)
-        p *= 2;
-    return p - 1;
+char treerecv[1000001] = {'\0'};
+//queue and stack
+//content: char*, default empty: nullptr
+char* datastorage[4000003] = {nullptr};
+char** frontptr;
+char** endptr;
+void clearqueue() {
+    frontptr = datastorage;
+    endptr   = datastorage + 1;
 }
-void recoverinorder(int l, int r, int total, int treetotal) {
-    if ((l + r) / 2 >= treetotal)
-        return;
-    if ((l + r) / 2 < total)
-        putchar(input[(l + r) / 2]);
-    if (l == r)
-        return;
-    recoverinorder(l, (l + r) / 2 - 1, total, treetotal);
-    recoverinorder((l + r) / 2 + 1, r, total, treetotal);
+void clearstack() {
+    endptr = datastorage;
 }
-void recoverpreorder(int l, int r, int total, int treetotal) {
-    if (l >= treetotal)
-        return;
-    if (l < total)
-        putchar(input[l]);
-    if (l == r)
-        return;
-    recoverpreorder(l + 1, (l + r) / 2, total, treetotal);
-    recoverpreorder((l + r) / 2 + 1, r, total, treetotal);
+void enqueue(char* cr) {
+    *endptr = cr;
+    endptr++;
 }
-void recoverpostorder(int l, int r, int total, int treetotal) {
-    if (r >= treetotal)
-        return;
-    if (r < total)
-        putchar(input[r]);
-    if (l == r)
-        return;
-    recoverpostorder(l, (l + r) / 2 - 1, total, treetotal);
-    recoverpostorder((l + r) / 2, r - 1, total, treetotal);
+void enstack(char* cr) {
+    *endptr = cr;
+    endptr++;
 }
-
+char* destack() {
+    if (endptr == datastorage)
+        return nullptr;
+    else
+        endptr--;
+    return *endptr;
+}
+char* dequeue() {
+    if (frontptr + 1 == endptr)
+        return nullptr;
+    else
+        frontptr++;
+    return *frontptr;
+}
+void estkpreorder(ltrav<char, treerecv> s, int total) {
+    if (s.current >= total)
+        return;
+    enqueue(&(s.val));
+    estkpreorder(s.left(), total);
+    estkpreorder(s.right(), total);
+    return;
+}
+void estkinorder(ltrav<char, treerecv> s, int total) {
+    if (s.current >= total)
+        return;
+    estkinorder(s.left(), total);
+    enqueue(&(s.val));
+    estkinorder(s.right(), total);
+    return;
+}
+void estkpostorder(ltrav<char, treerecv> s, int total) {
+    if (s.current >= total)
+        return;
+    estkpostorder(s.left(), total);
+    estkpostorder(s.right(), total);
+    enqueue(&(s.val));
+    return;
+}
+void vldr(int total) {
+    for (int i = 0; i < total; i++) {
+        *dequeue() = input[i];
+    }
+    for (int i = 0; i < total; i++) {
+        putchar(treerecv[i]);
+    }
+}
 int main() {
     int t, total, chr;
-    int ordf, chdf;
+    int ordf;
     scanf("%d", &t);
     while (t--) {
         scanf("%d", &total);
@@ -151,15 +148,21 @@ int main() {
         switch (ordf) {
         case 0:
             //PREORDER DECODE
-            recoverpreorder(0, get_full_tree(total), total, get_full_tree(total));
+            clearqueue();
+            estkpreorder(ltrav<char, treerecv>{0, treerecv[0]}, total);
+            vldr(total);
             break;
         case 1:
             //INORDER DECODE
-            recoverinorder(0, get_full_tree(total), total, get_full_tree(total));
+            clearqueue();
+            estkinorder(ltrav<char, treerecv>{0, treerecv[0]}, total);
+            vldr(total);
             break;
         case 2:
             //POSTORDER DECODE
-            recoverinorder(0, get_full_tree(total), total, get_full_tree(total));
+            clearqueue();
+            estkpostorder(ltrav<char, treerecv>{0, treerecv[0]}, total);
+            vldr(total);
             break;
         case 10:
             //PREORDER ENCODE
