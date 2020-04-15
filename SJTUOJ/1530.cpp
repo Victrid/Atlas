@@ -2,12 +2,14 @@
 #include <cstring>
 #include <iostream>
 using namespace std;
-//草，这个HS08TTC，改都不改一下
-char input[1000001] = {'\0'};
+//听说要用cin，👴服🌶
+char input[1000001]  = {'\0'};
+char input2[1000001] = {'\0'};
+int indexa;
 void printpreorder(int current, int total) {
     if (current >= total)
         return;
-    putchar(input[current]);
+    cout << (char)input[current];
     printpreorder((current << 1) + 1, total);
     printpreorder((current << 1) + 2, total);
     return;
@@ -16,7 +18,7 @@ void printinorder(int current, int total) {
     if (current >= total)
         return;
     printinorder((current << 1) + 1, total);
-    putchar(input[current]);
+    cout << (char)input[current];
     printinorder((current << 1) + 2, total);
     return;
 }
@@ -25,13 +27,13 @@ void printpostorder(int current, int total) {
         return;
     printpostorder((current << 1) + 1, total);
     printpostorder((current << 1) + 2, total);
-    putchar(input[current]);
+    cout << (char)input[current];
     return;
 }
 void estkpreorder(int current, int total) {
     if (current >= total)
         return;
-    input[current] = getchar();
+    input[current] = input2[indexa++];
     estkpreorder((current << 1) + 1, total);
     estkpreorder((current << 1) + 2, total);
     return;
@@ -40,7 +42,7 @@ void estkinorder(int current, int total) {
     if (current >= total)
         return;
     estkinorder((current << 1) + 1, total);
-    input[current] = getchar();
+    input[current] = input2[indexa++];
     estkinorder((current << 1) + 2, total);
     return;
 }
@@ -49,77 +51,73 @@ void estkpostorder(int current, int total) {
         return;
     estkpostorder((current << 1) + 1, total);
     estkpostorder((current << 1) + 2, total);
-    input[current] = getchar();
+    input[current] = input2[indexa++];
     return;
 }
 
 int main() {
-    int t, total, chr;
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+    int t, total;
+    char chr[10];
     int ordf;
-    scanf("%d", &t);
+    cin >> t;
     while (t--) {
-        scanf("%d", &total);
-        do {
-            chr = getchar();
-        } while (chr == ' ');
-        chr = getchar();
-        switch (chr) {
-        case 'N':
-            ordf = 1;
-            break;
-        case 'R':
-            ordf = 0;
-            break;
-        case 'O':
-            ordf = 2;
-            break;
-        }
-        do {
-            chr = getchar();
-        } while (chr != ' ');
-        chr = getchar();
-        if (chr == 'E')
+        cin >> total;
+        cin >> chr;
+        ordf = 0;
+        if (!strcmp(chr, "INORDER"))
+            ordf += 1;
+        if (!strcmp(chr, "POSTORDER"))
+            ordf += 2;
+        cin >> chr;
+        if (!strcmp(chr, "DECODE"))
+            ;
+        if (!strcmp(chr, "ENCODE"))
             ordf += 10;
-        do {
-            chr = getchar();
-        } while (chr != '\n');
 
         switch (ordf) {
         case 0:
             //PREORDER DECODE
+            cin >> input2;
+            indexa = 0;
             estkpreorder(0, total);
             input[total] = '\0';
-            puts(input);
+            cout << input;
             break;
         case 1:
             //INORDER DECODE
+            cin >> input2;
+            indexa = 0;
             estkinorder(0, total);
             input[total] = '\0';
-            puts(input);
+            cout << input;
             break;
         case 2:
             //POSTORDER DECODE
+            cin >> input2;
+            indexa = 0;
             estkpostorder(0, total);
             input[total] = '\0';
-            puts(input);
+            cout << input;
             break;
         case 10:
             //PREORDER ENCODE
-            scanf("%s", input);
+            cin >> input;
             printpreorder(0, total);
             break;
         case 11:
             //INORDER ENCODE
-            scanf("%s", input);
+            cin >> input;
             printinorder(0, total);
             break;
         case 12:
             //POSTORDER ENCODE
-            scanf("%s", input);
+            cin >> input;
             printpostorder(0, total);
             break;
         }
-        putchar('\n');
+        cout << endl;
     }
     return 0;
 }
