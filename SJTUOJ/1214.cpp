@@ -1,39 +1,47 @@
+#include <cstdio>
 #include <iostream>
 using namespace std;
+
 struct tree {
     tree* left;
-    tree* right;
+    tree* brat;
     int weight;
     bool isroot;
-    tree() : left(nullptr), right(nullptr), weight(0), isroot(true){};
+    tree() : left(nullptr), brat(nullptr), weight(0), isroot(true){};
 };
-bool qxblf = false;
-void qxbl(tree* root) {
-    if (qxblf)
+
+tree seq[1000002] = {};
+
+//pretrav
+bool pretrav_f = false;
+void pretrav(tree* root) {
+    if (pretrav_f)
         printf(" ");
-    qxblf = true;
+    pretrav_f = true;
     printf("%d", root->weight);
     if (root->left != nullptr)
-        qxbl(root->left);
-    if (root->right != nullptr)
-        qxbl(root->right);
+        pretrav(root->left);
+    if (root->brat != nullptr)
+        pretrav(root->brat);
     return;
 }
-bool hxblf = false;
-void hxbl(tree* root) {
+
+//posttrav
+bool posttrav_f = false;
+void posttrav(tree* root) {
     if (root->left != nullptr)
-        hxbl(root->left);
-    if (root->right != nullptr)
-        hxbl(root->right);
-    if (hxblf)
+        posttrav(root->left);
+    if (posttrav_f)
         printf(" ");
-    hxblf = true;
+    posttrav_f = true;
     printf("%d", root->weight);
+    if (root->brat != nullptr)
+        posttrav(root->brat);
     return;
 }
-//queue and stack
-//content: tree*, default empty: nullptr
-tree* datastorage[4000003] = {nullptr};
+
+//bfstrav
+tree* datastorage[1000003] = {nullptr};
 tree** frontptr;
 tree** endptr;
 void clearqueue() {
@@ -68,49 +76,50 @@ tree* dequeue() {
         frontptr++;
     return *frontptr;
 }
-void ccbl(tree* root) {
+bool bfstrav_f = false;
+void bfstrav(tree* root) {
     clearqueue();
     enqueue(root);
-    bool cflg = false;
     while (!qempty()) {
-        tree* proc = dequeue();
-        if (proc->left != nullptr)
-            enqueue(proc->left);
-        if (proc->right != nullptr)
-            enqueue(proc->right);
-        if (cflg)
-            printf(" ");
-        cflg = true;
-        printf("%d", proc->weight);
+        tree* rt = dequeue();
+        while (rt != nullptr) {
+            if (bfstrav_f)
+                printf(" ");
+            bfstrav_f = true;
+            printf("%d", rt->weight);
+            if (rt->left != nullptr)
+                enqueue(rt->left);
+            rt = rt->brat;
+        }
     }
     return;
 }
-tree sqt[100005] = {};
 int main() {
-    int n, l, r, vl, root;
-    scanf("%d", &n);
-    for (int i = 1; i <= n; i++) {
-        scanf("%d %d %d", &l, &r, &vl);
+    int t, l, b, vl, root;
+    scanf("%d", &t);
+    for (int i = 1; i <= t; i++) {
+        scanf("%d %d %d", &l, &b, &vl);
         if (l != 0) {
-            sqt[i].left         = sqt + l;
-            sqt[i].left->isroot = false;
+            seq[i].left         = seq + l;
+            seq[i].left->isroot = false;
         }
-        if (r != 0) {
-            sqt[i].right         = sqt + r;
-            sqt[i].right->isroot = false;
+        if (b != 0) {
+            seq[i].brat         = seq + b;
+            seq[i].brat->isroot = false;
         }
-        sqt[i].weight = vl;
+        seq[i].weight = vl;
     }
-    for (int i = 1; i <= n; i++)
-        if (sqt[i].isroot) {
+    for (int i = 1; i <= t; i++)
+        if (seq[i].isroot) {
             root = i;
             break;
         }
-    qxbl(sqt + root);
+    pretrav(seq + root);
     printf("\n");
-    hxbl(sqt + root);
+    posttrav(seq + root);
     printf("\n");
-    ccbl(sqt + root);
+    bfstrav(seq + root);
     printf("\n");
+
     return 0;
 }
