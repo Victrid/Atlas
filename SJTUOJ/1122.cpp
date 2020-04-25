@@ -11,6 +11,7 @@ struct storage {
     int msum;
     int lazy;
 };
+
 storage seq[400005];
 
 struct set {
@@ -75,6 +76,7 @@ void update_up(set s) {
     s.mx.maxr = s.right().mx.maxr;
     if (s.right().mx.maxr == s.right().size())
         s.mx.maxr += s.left().mx.maxr;
+    //! here should be sum.
     s.mx.msum = max(s.left().mx.msum + s.right().mx.msum, max(s.right().mx.maxr, s.right().mx.maxl));
     return;
 }
@@ -83,6 +85,7 @@ void buildtree(set s) {
         s.mx.maxl = 1;
         s.mx.maxr = 1;
         s.mx.msum = 1;
+        s.mx.lazy = 0;
         return;
     }
     buildtree(s.left());
@@ -91,12 +94,16 @@ void buildtree(set s) {
     return;
 }
 void markoc(set s) {
+    if (s.size() <= 0)
+        return;
     s.mx.maxl = 0;
     s.mx.maxr = 0;
     s.mx.msum = 0;
     s.mx.lazy = 1;
 }
 void markcl(set s) {
+    if (s.size() <= 0)
+        return;
     s.mx.maxl = s.size();
     s.mx.maxr = s.size();
     s.mx.msum = s.size();
