@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <iostream>
 using namespace std;
-#define DEBUG
+// #define DEBUG
 
 //最长的左部
 //最长的右部
@@ -36,38 +36,38 @@ struct set {
         return *this;
     }
 };
-DEBUG
-#ifdef DEBUG
-#include <queue>
-void display_a_segtree(set s) {
-    queue<set> q;
-    q.push(s);
-    q.push(set{0, 0, 0, seq[0]});
-    while (!q.empty()) {
-        set v  = q.front();
-        set vs = q.front();
-        q.pop();
-        if (v.l == 0) {
-            putchar('\n');
-            if (q.empty())
-                return;
-            v = q.front();
-            q.pop();
-            if (v.l == 0)
-                return;
-            else
-                q.push(set{0, 0, 0, seq[0]});
-        }
-        if (v.isleaf()) {
-            printf("l %d %d %d %d %d\t", v.l, v.mx.maxl, v.mx.maxr, v.mx.msum, v.mx.lazy);
-        } else {
-            printf("%d %d %d %d %d %d\t", v.l, v.r, v.mx.maxl, v.mx.maxr, v.mx.msum, v.mx.lazy);
-            q.push(v.left());
-            q.push(v.right());
-        }
-    }
-}
-#endif
+// //DEBUG
+// #ifdef DEBUG
+// #include <queue>
+// void display_a_segtree(set s) {
+//     queue<set> q;
+//     q.push(s);
+//     q.push(set{0, 0, 0, seq[0]});
+//     while (!q.empty()) {
+//         set v  = q.front();
+//         set vs = q.front();
+//         q.pop();
+//         if (v.l == 0) {
+//             putchar('\n');
+//             if (q.empty())
+//                 return;
+//             v = q.front();
+//             q.pop();
+//             if (v.l == 0)
+//                 return;
+//             else
+//                 q.push(set{0, 0, 0, seq[0]});
+//         }
+//         if (v.isleaf()) {
+//             printf("l %d %d %d %d %d\t", v.l, v.mx.maxl, v.mx.maxr, v.mx.msum, v.mx.lazy);
+//         } else {
+//             printf("%d %d %d %d %d %d\t", v.l, v.r, v.mx.maxl, v.mx.maxr, v.mx.msum, v.mx.lazy);
+//             q.push(v.left());
+//             q.push(v.right());
+//         }
+//     }
+// }
+// #endif
 void update_up(set s) {
     s.mx.maxl = s.left().mx.maxl;
     if (s.left().mx.maxl == s.left().size())
@@ -75,7 +75,7 @@ void update_up(set s) {
     s.mx.maxr = s.right().mx.maxr;
     if (s.right().mx.maxr == s.right().size())
         s.mx.maxr += s.left().mx.maxr;
-    s.mx.msum = max(s.left().mx.maxr + s.right().mx.maxl, max(s.right().mx.maxr, s.right().mx.maxl));
+    s.mx.msum = max(s.left().mx.msum + s.right().mx.msum, max(s.right().mx.maxr, s.right().mx.maxl));
     return;
 }
 void buildtree(set s) {
@@ -138,7 +138,7 @@ void update(int l, int r, int status, set s) {
     if (l <= mid) {
         update(l, r, status, s.left());
     }
-    if (r >= mid) {
+    if (r > mid) {
         update(l, r, status, s.right());
     }
     update_up(s);
@@ -172,9 +172,11 @@ int main() {
         if (op1 == 1) {
             scanf("%d", &op2);
             printf("%d\n", find(op2, set{1, N, 1, seq[1]}, set{1, N, 1, seq[1]}));
+            //display_a_segtree(set{1, N, 1, seq[1]});
         } else {
             scanf("%d %d", &op2, &op3);
             release(op2, op3, set{1, N, 1, seq[1]});
+            //display_a_segtree(set{1, N, 1, seq[1]});
         }
     }
     return 0;
