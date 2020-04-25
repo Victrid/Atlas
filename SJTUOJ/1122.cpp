@@ -27,15 +27,6 @@ struct set {
     }
     bool isleaf() { return !(r - l); }
     int size() { return r - l + 1; }
-    set& operator=(const set& rhs) {
-        if (this == &rhs)
-            return *this;
-        l       = rhs.l;
-        r       = rhs.r;
-        current = rhs.current;
-        mx      = rhs.mx;
-        return *this;
-    }
 };
 // //DEBUG
 // #ifdef DEBUG
@@ -94,16 +85,12 @@ void buildtree(set s) {
     return;
 }
 void markoc(set s) {
-    if (s.size() <= 0)
-        return;
     s.mx.maxl = 0;
     s.mx.maxr = 0;
     s.mx.msum = 0;
     s.mx.lazy = 1;
 }
 void markcl(set s) {
-    if (s.size() <= 0)
-        return;
     s.mx.maxl = s.size();
     s.mx.maxr = s.size();
     s.mx.msum = s.size();
@@ -117,8 +104,7 @@ void pushtags(set s) {
         }
         markoc(s.left());
         markoc(s.right());
-        return;
-    } else {
+    } else if (s.mx.lazy == 2) {
         s.mx.lazy = 0;
         if (s.isleaf()) {
             return;
@@ -129,9 +115,6 @@ void pushtags(set s) {
 }
 //status 1 occupy 2 release
 void update(int l, int r, int status, set s) {
-    if (s.mx.lazy) {
-        pushtags(s);
-    }
     if (s.l >= l && s.r <= r) {
         if (status == 1)
             markoc(s);
@@ -141,6 +124,9 @@ void update(int l, int r, int status, set s) {
     }
     if (s.isleaf())
         return;
+    if (s.mx.lazy) {
+        pushtags(s);
+    }
     int mid = (s.l + s.r) >> 1;
     if (l <= mid) {
         update(l, r, status, s.left());
@@ -151,18 +137,21 @@ void update(int l, int r, int status, set s) {
     update_up(s);
     return;
 }
-int find(int size, set s, set s0) {
+int find(int size, set s) {
     if (s.mx.msum < size)
         return 0;
-    int ll = find(size, s.left(), s0);
+    if (s.isleaf())
+        return 1;
+    //...Wo Shi Han Han
+    if (s.mx.lazy)
+        pushtags(s);
+    int ll = find(size, s.left());
     if (ll)
         return ll;
     if ((s.right().mx.maxl + s.left().mx.maxr) >= size) {
-        int i = s.left().r - s.left().mx.maxr + 1;
-        update(s.left().r - s.left().mx.maxr + 1, s.left().r - s.left().mx.maxr + size, 1, s0);
-        return i;
+        return s.left().r - s.left().mx.maxr + 1;
     }
-    int lr = find(size, s.right(), s0);
+    int lr = find(size, s.right());
     if (lr)
         return lr;
     return 0;
@@ -178,7 +167,11 @@ int main() {
         scanf("%d", &op1);
         if (op1 == 1) {
             scanf("%d", &op2);
-            printf("%d\n", find(op2, set{1, N, 1, seq[1]}, set{1, N, 1, seq[1]}));
+            int p = find(op2, set{1, N, 1, seq[1]});
+            printf("%d\n", p);
+            if (p) {
+                update(p, p + op2 - 1, 1, set{1, N, 1, seq[1]});
+            }
             //display_a_segtree(set{1, N, 1, seq[1]});
         } else {
             scanf("%d %d", &op2, &op3);
