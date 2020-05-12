@@ -1,46 +1,50 @@
+#include <cstdio>
 #include <iostream>
-#include <unordered_map>
-#include <vector>
 
 using namespace std;
-
+//Rewrite without STL
 int check() {
     int bednum      = 0;
     int current     = 0;
     int badcustomer = 0;
-    cin >> bednum;
+    scanf("%d", &bednum);
     if (!bednum)
         return -1;
-    char process = cin.get();
-    unordered_map<char, int> jiten;
-    while (cin.get(process) && process != '\n') {
-        if (jiten.find(process) == jiten.end()) {
-            jiten[process] = 1;
+    int avail[1000] = {0};
+    getchar();
+    char process = getchar();
+    while (process != '\n') {
+        if (avail[process] == 0) {
+            avail[process] = 1;
             current++;
             if (current > bednum) {
                 current--;
-                jiten[process] = 2;
+                avail[process] = 2;
                 badcustomer++;
             }
         } else {
-            if (jiten[process] != 2)
+            if (avail[process] != 2)
                 current--;
-            jiten[process] = 0;
+            avail[process] = 0;
         }
+        process = getchar();
     }
     return badcustomer;
 }
 int main() {
-    vector<int> board;
+    int board[10000];
+    int bs      = 0;
     int process = check();
     while (process != -1) {
-        board.push_back(process);
+        board[bs] = process;
+        bs++;
         process = check();
     }
-    for (auto it = board.begin(); it < board.end(); it++) {
-        if (it != board.begin())
-            cout << endl;
-        cout << (*it ? to_string(*it) + " customer(s) walked away." : "All customers tanned successfully.");
+    for (int i = 0; i < bs; i++) {
+        if (board[i] != 0)
+            printf("%d customer(s) walked away.\n", board[i]);
+        else
+            printf("All customers tanned successfully.\n");
     }
     return 0;
 }
