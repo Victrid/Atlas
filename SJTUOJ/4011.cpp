@@ -103,6 +103,6 @@ int main() {
             k_h[i][i] = 0;
         }
     }
-    DP(k, h, h).print();
+    DP(k, h, k).print();
     return 0;
 }
