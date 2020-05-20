@@ -45,4 +45,7 @@
 # Clion files
 
 /.idea/*
+
+#Valgrind files
 vgcore.*
+callgrind.*
