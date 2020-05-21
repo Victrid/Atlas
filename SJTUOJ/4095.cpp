@@ -60,6 +60,24 @@ void update(int l, set s) {
     return;
 }
 
+int binarysearch(int l, int r, int num, set ss) {
+    int llim = l, mid;
+    while (l <= r) {
+        mid   = (l + r) / 2;
+        int t = query(llim, mid, ss);
+        if (t == num) {
+            if (exist[mid])
+                return mid;
+            else
+                r = mid - 1;
+        } else if (t < num)
+            l = mid + 1;
+        else
+            r = mid - 1;
+    }
+    return 0;
+}
+
 int main() {
     int N, M;
     scanf("%d%d", &N, &M);
@@ -77,15 +95,11 @@ int main() {
         if (amounts == 0) {
             int p = current;
             if ((ll == 0) || (direction && rr != 0)) {
-                while (p++)
-                    if (exist[p])
-                        break;
+                p        = binarysearch(p + 1, N, 1, set{1, N, 1, seq[1]});
                 exist[p] = false;
                 update(p, set{1, N, 1, seq[1]});
             } else {
-                while (p--)
-                    if (exist[p])
-                        break;
+                p        = binarysearch(1, p - 1, ll, set{1, N, 1, seq[1]});
                 exist[p] = false;
                 update(p, set{1, N, 1, seq[1]});
             }
@@ -94,22 +108,11 @@ int main() {
         }
         if (!direction) {
             if (amounts < rr + 1) {
-                while (true) {
-                    if (exist[current]) {
-                        amounts--;
-                        if (amounts == 0)
-                            break;
-                    }
-                    current++;
-                }
+                current        = binarysearch(current, N, amounts, set{1, N, 1, seq[1]});
                 exist[current] = false;
                 update(current, set{1, N, 1, seq[1]});
-                while (current++) {
-                    if (exist[current]) {
-                        break;
-                    }
-                }
-                q = query(1, N, set{1, N, 1, seq[1]});
+                current = binarysearch(current + 1, N, 1, set{1, N, 1, seq[1]});
+                q       = query(1, N, set{1, N, 1, seq[1]});
                 continue;
             }
             if (amounts >= rr + 1 && amounts < rr + q) {
@@ -117,22 +120,11 @@ int main() {
                 current   = N;
                 direction = 1;
                 amounts++;
-                while (true) {
-                    if (exist[current]) {
-                        amounts--;
-                        if (amounts == 0)
-                            break;
-                    }
-                    current--;
-                }
+                current        = binarysearch(1, N, q - amounts + 1, set{1, N, 1, seq[1]});
                 exist[current] = false;
                 update(current, set{1, N, 1, seq[1]});
-                while (current--) {
-                    if (exist[current]) {
-                        break;
-                    }
-                }
-                q = query(1, N, set{1, N, 1, seq[1]});
+                current = binarysearch(1, current - 1, q - amounts, set{1, N, 1, seq[1]});
+                q       = query(1, N, set{1, N, 1, seq[1]});
                 continue;
             }
             if (amounts >= rr + q) {
@@ -140,42 +132,20 @@ int main() {
                 current   = 1;
                 direction = 0;
                 amounts++;
-                while (true) {
-                    if (exist[current]) {
-                        amounts--;
-                        if (amounts == 0)
-                            break;
-                    }
-                    current++;
-                }
+                current        = binarysearch(1, N, amounts, set{1, N, 1, seq[1]});
                 exist[current] = false;
                 update(current, set{1, N, 1, seq[1]});
-                while (current++) {
-                    if (exist[current]) {
-                        break;
-                    }
-                }
-                q = query(1, N, set{1, N, 1, seq[1]});
+                current = binarysearch(current + 1, N, 1, set{1, N, 1, seq[1]});
+                q       = query(1, N, set{1, N, 1, seq[1]});
                 continue;
             }
         } else {
             if (amounts < ll + 1) {
-                while (true) {
-                    if (exist[current]) {
-                        amounts--;
-                        if (amounts == 0)
-                            break;
-                    }
-                    current--;
-                }
+                current        = binarysearch(1, current, ll - amounts + 2, set{1, N, 1, seq[1]});
                 exist[current] = false;
                 update(current, set{1, N, 1, seq[1]});
-                while (current--) {
-                    if (exist[current]) {
-                        break;
-                    }
-                }
-                q = query(1, N, set{1, N, 1, seq[1]});
+                current = binarysearch(1, current - 1, ll - amounts + 1, set{1, N, 1, seq[1]});
+                q       = query(1, N, set{1, N, 1, seq[1]});
                 continue;
             }
             if (amounts >= ll + 1 && amounts < ll + q) {
@@ -183,22 +153,11 @@ int main() {
                 current   = 1;
                 direction = 0;
                 amounts++;
-                while (true) {
-                    if (exist[current]) {
-                        amounts--;
-                        if (amounts == 0)
-                            break;
-                    }
-                    current++;
-                }
+                current        = binarysearch(1, N, amounts, set{1, N, 1, seq[1]});
                 exist[current] = false;
                 update(current, set{1, N, 1, seq[1]});
-                while (current++) {
-                    if (exist[current]) {
-                        break;
-                    }
-                }
-                q = query(1, N, set{1, N, 1, seq[1]});
+                current = binarysearch(current + 1, N, 1, set{1, N, 1, seq[1]});
+                q       = query(1, N, set{1, N, 1, seq[1]});
                 continue;
             }
             if (amounts >= ll + q) {
@@ -206,22 +165,11 @@ int main() {
                 current   = N;
                 direction = -1;
                 amounts++;
-                while (true) {
-                    if (exist[current]) {
-                        amounts--;
-                        if (amounts == 0)
-                            break;
-                    }
-                    current--;
-                }
+                current        = binarysearch(1, N, q - amounts + 1, set{1, N, 1, seq[1]});
                 exist[current] = false;
                 update(current, set{1, N, 1, seq[1]});
-                while (current--) {
-                    if (exist[current]) {
-                        break;
-                    }
-                }
-                q = query(1, N, set{1, N, 1, seq[1]});
+                current = binarysearch(1, current - 1, q - amounts, set{1, N, 1, seq[1]});
+                q       = query(1, N, set{1, N, 1, seq[1]});
                 continue;
             }
         }
