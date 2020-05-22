@@ -46,6 +46,11 @@
 
 /.idea/*
 
-#Valgrind files
+# Valgrind files
 vgcore.*
 callgrind.*
+
+# Test program files
+*.tester
+*.t.d.out
+*.testdata
