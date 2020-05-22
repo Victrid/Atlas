@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstring>
 #include <iostream>
 using namespace std;
 //TLE... It's segtree...
@@ -43,13 +44,12 @@ T* MergeSort(T* list, int listSize) {
             rct++;
         }
     }
-    for (int i = 0; i < listSize; i++) {
-        list[i] = tmplist[i];
-    }
+    memcpy(list, tmplist, listSize * sizeof(T));
+    delete[] tmplist;
     return list;
 }
-
-point lst[50];
+//......
+point lst[50001];
 long long dp[50001][11][2]   = {};
 long long seq[200005][11][2] = {};
 
