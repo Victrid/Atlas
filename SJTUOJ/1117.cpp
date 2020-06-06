@@ -33,7 +33,11 @@ void connect(node* n1, node* n2) {
     return;
 }
 bool isleaf(node* n1) {
-    return n1->sons == nullptr && n1->sons->next == nullptr;
+    if (n1 == root) {
+        return n1->sons == nullptr;
+    } else {
+        return n1->sons->next == nullptr;
+    }
 }
 void disconnect(node* n1) {
     son* s2 = n1->sons->val->sons;
@@ -83,14 +87,11 @@ int main() {
     }
     while (!q.empty()) {
         auto l = q.top();
+        printf("%d ", l->num);
         q.pop();
         if (l->sons == nullptr)
             break;
         auto father = l->sons->val;
-        printf("%d ", father->num);
-        if (l == root) {
-            root = father;
-        }
         disconnect(l);
         if (isleaf(father)) {
             q.push(father);
