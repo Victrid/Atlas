@@ -45,4 +45,12 @@
 # Clion files
 
 /.idea/*
+
+# Valgrind files
 vgcore.*
+callgrind.*
+
+# Test program files
+*.tester
+*.t.d.out
+*.testdata
