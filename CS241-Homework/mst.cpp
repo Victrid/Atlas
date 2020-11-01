@@ -12,7 +12,7 @@ struct edge {
     int B;
     int Weight;
 };
-
+j
 struct edge_compare {
     bool operator()(edge& a, edge& b) { return a.Weight > b.Weight; }
 };

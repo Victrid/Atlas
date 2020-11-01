@@ -1,0 +1,45 @@
+\documentclass[UTF8]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath}
+\usepackage{chngpage}
+\usepackage{afterpage}
+\usepackage{amsfonts}
+\begin{document}
+    \title{Homework 6: Greedy algorithm, proof, etc.}
+    \date{}
+    \maketitle
+    \section{Normal Coin Changing}
+    \noindent \textsc{Algorithm}: \textit{pseudo code for changing quarters, dimes, nickels and pennies}
+    \begin{adjustwidth}{1cm}{0cm}
+         \tt 
+        \noindent \textbf{def} Change(total, change):\\
+        \indent \noindent \textbf{for} change\_type \textbf{in} change\_types.sorted(reverse=True):\\
+        \indent \indent \noindent \textbf{if} total >= change\_type.value:\\
+        \indent \indent \indent \noindent change[change\_type] += 1\\
+        \indent \indent \indent \noindent \textbf{return} Change(total-change\_type.value, change)\\
+        \indent \noindent \textbf{return} change
+    \end{adjustwidth}\par\par
+    \noindent \textsc{Proof}\par
+    Define a coin set, if for all given total, solution generated using the algorithm above yields an optimal solution, as greedily changable.
+
+    It's obvious that when a coin group $A$ greedily changable, $\forall A' \subset A$ greedily changable.
+
+    Let $A$ greedily changable, $a' \notin A, \forall a \in A\; a < a'$, with greedy algorithm definition we have: $A\cup\{a'\}$ can be greedily changed $\Leftrightarrow$ $\forall price \in (a', 2a')$, $coin\_amount_{A}(price) \geq coin\_amount_{A}(price-a')+1$. As $A$ greedily changable, the upper limit can be reduced to$ \left\lceil a'/\mathrm{max}(A)\right\rceil \mathrm{max}(A)$.
+
+    We may give a \textsc{Sufficient Condition} here: if $a' = k\mathrm{max}(A), k \in \mathbb{N^*}\backslash \{1\}$,then $A\cup\{a'\}$ can be greedily changed. As the upper limit now reduced to $a'$ and obviously we have $k > 1$ fits the condition.
+
+    As of this situation, dimes, nickels and pennies fit the sufficient condition. then we have \{dime, nickel, penny\} greedily changable.
+
+    In $(a', \left\lceil a'/\mathrm{max}(A)\right\rceil \mathrm{max}(A))$ we can verify that $coin\_amount_{A}(price) \geq coin\_amount_{A}(price-a')+1$ holds in all situations. Now we have \{quarter, dime, nickel, penny\} greedily changable. $\Box$ 
+
+    \section{Coins by Geometric Progression}
+    As prooved above, geometric progression started at 1 and common ratio $c > 1$ fits the sufficient condition of greedily changable.
+
+    \section{Example not Yielding Optimal}
+    Using greedy algorithm with a coin set with prices as \{1, 5, 11\} fails to yield the optimal solution for total equals to 15.\\
+    Greedy: $1\times 11$, $4 \times 1$\\
+    Optimal: $3 \times 5$
+
+
+\end{document}
+return
